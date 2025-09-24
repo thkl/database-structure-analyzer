@@ -1,0 +1,39 @@
+{
+  "name": "database-structure-analyzer",
+  "version": "1.0.0",
+  "description": "A Node.js app to analyze database structures, generate SQL files, and create SVG visualizations",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "analyze": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "validate-config": "node -e \"const {ConfigManager} = require('./lib/ConfigManager'); new ConfigManager().load().then(() => console.log('✅ Configuration valid')).catch(e => {console.error('❌', e.message); process.exit(1);});\""
+  },
+  "keywords": [
+    "database",
+    "sql",
+    "visualization",
+    "sequelize",
+    "svg",
+    "er-diagram"
+  ],
+  "author": "th.kluge@me.com",
+  "license": "MIT",
+  "dependencies": {
+    "sequelize": "^6.35.0",
+    "mysql2": "^3.6.3",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "sqlite3": "^5.1.6",
+    "mariadb": "^3.2.2",
+    "tedious": "^16.7.1",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

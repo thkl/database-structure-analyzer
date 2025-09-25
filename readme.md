@@ -5,14 +5,20 @@ A powerful Node.js application that analyzes database structures, generates SQL 
 ## Features
 
 - 🔍 **Multi-Database Support**: Works with MySQL, PostgreSQL, SQLite, MariaDB, and SQL Server (MSSQL)
-- 📊 **Structure Analysis**: Extracts tables, columns, indexes, and relationships
-- 📄 **SQL Generation**: Creates CREATE TABLE statements and schema exports
+- 📊 **Dual Analysis Modes**: Analyze live databases OR existing Sequelize models
+- 📄 **SQL Generation**: Creates CREATE TABLE statements and schema exports (database mode)
 - 🎨 **SVG Visualization**: Generates beautiful Entity Relationship Diagrams
-- 🔗 **Relationship Detection**: Automatically identifies foreign key relationships
-- ⚡ **Easy Configuration**: Environment-based configuration with validation
-- 🛡️ **Robust Error Handling**: Detects common issues with helpful suggestions
+- 🔗 **Relationship Detection**: Automatically identifies foreign key relationships and associations
 - 📋 **Progress Reporting**: Shows analysis progress for large databases
-- 🎯 **Modular Design**: Clean, maintainable code structure
+- 🔧 **Configurable Routing**: Customizable spacing and visual appearance
+
+## Analysis Modes
+
+### Database Mode (Default)
+Connects to a live database and analyzes its structure via SQL queries.
+
+### Sequelize Models Mode  
+Analyzes existing Sequelize model definitions without requiring database connection.
 
 ## Installation
 
@@ -67,7 +73,7 @@ SVG_VISUAL_BUFFER=50         # Additional visual spacing (default: 50px)
 
 # Routing behavior
 SVG_SAFE_ZONE_OFFSET=40      # Safe zone offset from margins (default: 40px)
-SVG_ROUTING_SPACING_TOP=120  # Top routing corridor spacing (default: 120px) 
+SVG_ROUTING_SPACING_TOP=60   # Top routing corridor spacing (default: 60px) 
 SVG_ROUTING_SPACING_SIDE=40  # Side routing corridor spacing (default: 40px)
 ```
 
@@ -138,9 +144,9 @@ DB_TRUST_SERVER_CERTIFICATE=true
 
 ## Usage
 
-### Basic Usage
+### Database Analysis Mode
 
-Run the analyzer with your configured database:
+Run the analyzer against a live database:
 
 ```bash
 npm start
@@ -152,12 +158,60 @@ or
 node index.js
 ```
 
-### Development Mode
+### Sequelize Models Mode
 
-For development with auto-reload:
+Analyze existing Sequelize models in your project:
 
 ```bash
-npm run dev
+# Set analysis mode to 'models'
+ANALYSIS_MODE=models npm start
+```
+
+Or add to your `.env` file:
+```env
+ANALYSIS_MODE=models
+```
+
+**Requirements for Models Mode:**
+- Place the analyzer in your project root, OR
+- Set `SEQUELIZE_MODELS_PATH` to your models directory
+- Ensure your models export a Sequelize instance
+
+### Integration with Existing Projects
+
+You can also use the analyzers programmatically in your existing projects:
+
+```javascript
+// For existing Sequelize projects
+const { SequelizeModelAnalyzer } = require('database-structure-analyzer');
+
+// Assuming you have a Sequelize instance
+const analyzer = new SequelizeModelAnalyzer(sequelize, {
+  generateSQL: false, // Skip SQL generation
+  includeThroughModels: true // Include junction tables
+});
+
+const structure = await analyzer.analyzeModels();
+await analyzer.generateSVGDiagram('./output');
+```
+
+```javascript
+// For database connections
+const { DatabaseAnalyzer } = require('database-structure-analyzer');
+
+const config = {
+  database: 'mydb',
+  username: 'user', 
+  password: 'pass',
+  host: 'localhost',
+  dialect: 'mysql'
+};
+
+const analyzer = new DatabaseAnalyzer(config);
+await analyzer.validateConnection();
+const structure = await analyzer.analyzeStructure();
+await analyzer.generateSQLFiles('./output');
+await analyzer.generateSVGDiagram('./output');
 ```
 
 ## Output Files
